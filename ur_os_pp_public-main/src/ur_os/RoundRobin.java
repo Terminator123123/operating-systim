@@ -18,6 +18,7 @@ public class RoundRobin extends Scheduler{
         super(os);
         q = 5;
         cont=0;
+        multiqueue = false;
     }
     
     RoundRobin(OS os, int q){
@@ -36,6 +37,33 @@ public class RoundRobin extends Scheduler{
     void resetCounter(){
         cont=0;
     }
+
+    int getQuantum(){
+        return q;
+    }
+
+    boolean isMultiqueue(){
+        return multiqueue;
+    }
+
+    /**
+     * Advances the quantum counter of the process that is currently in the CPU and reports
+     * whether the quantum has just expired. It does NOT touch the CPU.
+     *
+     * This is the entry point used when the Round Robin works as one level of a multiqueue
+     * scheduler (PRIORITY or MFQ): in that case the parent scheduler is the one that knows
+     * every queue, so it must be the one deciding which process runs next. If this queue
+     * expelled the process on its own it could only choose a replacement from its own level,
+     * which would break the priority policy between queues.
+     */
+    boolean advanceQuantum(){
+        cont++;
+        if(cont >= q){
+            resetCounter();
+            return true;
+        }
+        return false;
+    }
    
     @Override
     public void getNext(boolean cpuEmpty) {
@@ -47,6 +75,12 @@ public class RoundRobin extends Scheduler{
                 os.interrupt(InterruptType.SCHEDULER_RQ_TO_CPU, candidato);
                 resetCounter(); // arranca su quantum desde cero
             }
+            return;
+        }
+
+        // Cuando el Round Robin es un nivel de una cola multinivel, la expulsion la decide
+        // el scheduler padre a traves de advanceQuantum(), no esta cola.
+        if (multiqueue) {
             return;
         }
 

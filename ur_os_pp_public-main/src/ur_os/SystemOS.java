@@ -457,7 +457,10 @@ public final class SystemOS implements Runnable{
         
         
         System.out.println("*********Comparation:************************");
-        compareFiles("C:\\Users\\jesus\\Desktop\\ur_os_pp_public-main\\FCFS.txt", "C:\\Users\\jesus\\Desktop\\ur_os_pp_public-main\\FCFS.txt");
+        //Absolute paths tied to a single machine were replaced by the file this run just
+        //generated, so the comparison works on any computer. Replace the second argument
+        //with the reference file you want to check the run against.
+        compareFiles(returnFile(), returnFile());
         
     }
     
