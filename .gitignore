@@ -1,0 +1,30 @@
+# --- Compiled Java output ---
+*.class
+*.jar
+*.war
+/ur_os_pp_public-main/build/
+/ur_os_pp_public-main/out/
+/ur_os_pp_public-main/dist/
+
+# --- NetBeans ---
+/ur_os_pp_public-main/nbproject/private/
+
+# --- IntelliJ IDEA / Eclipse ---
+.idea/
+*.iml
+*.iws
+*.ipr
+.classpath
+.project
+/.settings/
+
+# --- VS Code ---
+.vscode/
+
+# --- OS junk ---
+Thumbs.db
+Desktop.ini
+.DS_Store
+
+# --- Office temp files ---
+~$*
