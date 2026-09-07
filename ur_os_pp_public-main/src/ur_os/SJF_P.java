@@ -1,8 +1,5 @@
 package ur_os;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 
 public class SJF_P extends Scheduler{
 
@@ -11,20 +8,31 @@ public class SJF_P extends Scheduler{
     }
 
     @Override
-    public void newProcess(boolean cpuEmpty){
-        if (!cpuEmpty) {// cuando un proceso entra en cola, se interruimpe el actual y lo manda a cola
+    public void addProcess(Process p) {
+        // Un proceso nuevo o que vuelve de I/O solo puede desalojar al proceso
+        // actual si su rafaga restante es estrictamente menor (SRTF).
+        boolean canPreempt = (p.getState() == ProcessState.NEW
+                || p.getState() == ProcessState.IO)
+                && !os.isCPUEmpty()
+                && p.getRemainingTimeInCurrentBurst()
+                   < os.getProcessInCPU().getRemainingTimeInCurrentBurst();
+
+        // Agregar primero el proceso entrante garantiza que, si hay desalojo,
+        // la siguiente seleccion compare al entrante con el proceso extraido.
+        p.setState(ProcessState.READY);
+        processes.add(p);
+
+        if (canPreempt) {
             os.interrupt(InterruptType.SCHEDULER_CPU_TO_RQ, null);
             addContextSwitch();
         }
     }
 
     @Override
-    public void IOReturningProcess(boolean cpuEmpty){
-        if (!cpuEmpty) { // ocurre igual, cuando un proceso sale de I/O lo sacan de la cpu y se ingresa quien tiene menor burst
-            os.interrupt(InterruptType.SCHEDULER_CPU_TO_RQ, null);
-            addContextSwitch();
-        }
-    }
+    public void newProcess(boolean cpuEmpty) {}
+
+    @Override
+    public void IOReturningProcess(boolean cpuEmpty) {}
 
     @Override
     public void getNext(boolean cpuEmpty) {
@@ -46,5 +54,4 @@ public class SJF_P extends Scheduler{
         processes.remove(candidato);
         os.interrupt(InterruptType.SCHEDULER_RQ_TO_CPU, candidato);
     }
-
 }
