@@ -8,5 +8,5 @@ Throughput: 0.037037037037037035
 Average Turnaround Time: 75.75
 Average Waiting Time: 42.0
 Average Context Switches (solo Gantt): 2.25
-Average Context Switches (completo): 3.5
+Average Context Switches (completo): 2.25
 Average Response Time: 3.75
