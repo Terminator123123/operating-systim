@@ -48,10 +48,8 @@ public class ReadyQueue {
                 createSchedulerFile("MFQ");
                 break;
             case FAIR:
-                // Not part of this deliverable: the extra scheduler is only required for groups
-                // of four members. It falls back to FCFS so the option does not break the menu.
-                s = new FCFS(os);
-                createSchedulerFile("FCFS");
+                s = new FAIR(os, 0);
+                createSchedulerFile("FAIR");
                 break;
         }
 
